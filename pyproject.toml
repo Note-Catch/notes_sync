@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "notes-sync"
+version = "0.1.0"
+description = ""
+authors = ["Danil Sidoruk <danilsidoruknv@yandex.ru>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pydantic = "^2.9.2"
+fastapi = "^0.115.4"
+SQLAlchemy = "^2.0.36"
+SQLAlchemy-Utils = "^0.41.2"
+starlette = "^0.41.2"
+alembic = "^1.13.3"
+aiohttp = "^3.10.10"
+psycopg2-binary = "^2.9.10"
+python-dotenv = "^1.0.1"
+uvicorn = "^0.32.0"
+
+[tool.poetry.group.dev.dependencies]
+isort = "^5.13.2"
+black = "^24.10.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
