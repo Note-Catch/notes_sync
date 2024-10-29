@@ -17,5 +17,5 @@ shell:
 	poetry shell
 
 format:
-	poetry run isort $(CODE) --profile=black $(if $(CHECK_ONLY),--check-only)
+	poetry run isort $(CODE) $(if $(CHECK_ONLY),--check-only)
 	poetry run black $(CODE) -t py311 $(if $(CHECK_ONLY),--check --diff)

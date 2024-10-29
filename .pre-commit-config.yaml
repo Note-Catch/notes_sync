@@ -2,7 +2,6 @@ repos:
   - repo: local
     hooks:
       - id: isort
-        args: [--profiles=black]
         name: isort
         entry: isort
         language: system
