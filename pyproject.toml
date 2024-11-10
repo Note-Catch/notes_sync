@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "notes-sync"
+name = "notes_sync"
 version = "0.1.0"
 description = ""
 authors = ["Danil Sidoruk <danilsidoruknv@yandex.ru>"]
