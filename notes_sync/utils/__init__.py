@@ -1,5 +1,3 @@
-from notes_sync.utils.get_settings import get_settings
+from notes_sync.utils.get_hostname import get_hostname
 
-__all__ = [
-    "get_settings",
-]
+__all__ = ["get_hostname"]

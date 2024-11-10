@@ -1,4 +1,4 @@
-SERVER_NAME ?= server
+SERVER_NAME ?= notes_sync
 DOCS_SERVER_NAME ?= $(SERVER_NAME)/docs
 
 PROJECT_NAMESPACE ?= eoan-ermine
@@ -7,7 +7,7 @@ REGISTRY_NAME ?= ghcr.io
 SERVER_IMAGE ?= $(REGISTRY_NAME)/$(PROJECT_NAMESPACE)/$(SERVER_NAME)
 DOCS_SERVER_IMAGE ?= $(REGISTRY_NAME)/$(PROJECT_NAMESPACE)/$(DOCS_SERVER_NAME)
 
-CODE = app
+CODE = notes_sync
 
 all:
 	@echo "make shell\t\t — activate shell"
@@ -19,3 +19,6 @@ shell:
 format:
 	poetry run isort $(CODE) $(if $(CHECK_ONLY),--check-only)
 	poetry run black $(CODE) -t py311 $(if $(CHECK_ONLY),--check --diff)
+
+run:
+	poetry run python3 -m $(CODE)
