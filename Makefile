@@ -22,3 +22,12 @@ format:
 
 run:
 	poetry run python3 -m $(CODE)
+
+db:
+	docker compose -f docker-compose.yml up --detach --remove-orphans
+
+open_db:
+	docker exec -it notes_sync_db psql -U ${DB_USER} -W ${DB_NAME}
+
+clean_db:
+	docker compose down && docker volume rm $(shell docker volume ls --quiet)
