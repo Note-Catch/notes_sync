@@ -7,6 +7,7 @@ REGISTRY_NAME ?= ghcr.io
 SERVER_IMAGE ?= $(REGISTRY_NAME)/$(PROJECT_NAMESPACE)/$(SERVER_NAME)
 DOCS_SERVER_IMAGE ?= $(REGISTRY_NAME)/$(PROJECT_NAMESPACE)/$(DOCS_SERVER_NAME)
 
+TEST = poetry run python3 -m pytest --verbosity=2 --showlocals --log-level=DEBUG
 CODE = notes_sync
 
 all:
@@ -37,3 +38,9 @@ migrate:
 
 revision:
 	poetry run alembic --config notes_sync/database/alembic.ini revision --autogenerate
+
+test: db
+	$(TEST)
+
+test_cov: db
+	$(TEST) --cov=notes_sync
