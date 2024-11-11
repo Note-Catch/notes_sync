@@ -31,3 +31,9 @@ open_db:
 
 clean_db:
 	docker compose down && docker volume rm $(shell docker volume ls --quiet)
+
+migrate:
+	poetry run alembic --config notes_sync/database/alembic.ini upgrade head
+
+revision:
+	poetry run alembic --config notes_sync/database/alembic.ini revision --autogenerate
