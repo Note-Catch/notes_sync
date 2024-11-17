@@ -9,6 +9,7 @@ load_dotenv()
 
 class DefaultSettings(BaseSettings):
     ENV: str = environ.get("ENV", "local")
+    PATH_PREFIX: str = environ.get("PATH_PREFIX", "/api/v1")
     APP_HOST: str = environ.get("APP_HOST", "0.0.0.0")
     APP_PORT: int = environ.get("APP_PORT", 8080)
 
@@ -22,6 +23,10 @@ class DefaultSettings(BaseSettings):
 
     KAFKA_HOST: str = environ.get("KAFKA_HOST", "localhost")
     KAFKA_PORT: int = int(environ.get("KAFKA_PORT", 9092))
+
+    ADMIN_LOGIN: str = environ.get("ADMIN_LOGIN", "eoanermine")
+    ADMIN_PASSWORD: str = environ.get("ADMIN_PASSWORD", "eoanermine")
+
     @property
     def database_settings(self) -> dict:
         """
