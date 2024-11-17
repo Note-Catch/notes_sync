@@ -3,7 +3,6 @@ from fastapi import FastAPI
 
 from notes_sync.config import DefaultSettings, get_settings
 from notes_sync.endpoints import list_of_routes
-from notes_sync.logger import Logger
 from notes_sync.utils import get_hostname
 
 settings = get_settings()

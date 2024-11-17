@@ -10,7 +10,6 @@ import pytest
 from alembic.command import upgrade
 from alembic.config import Config
 from httpx import AsyncClient
-from mock import AsyncMock
 from sqlalchemy.orm import Session
 from sqlalchemy_utils import create_database, database_exists, drop_database
 

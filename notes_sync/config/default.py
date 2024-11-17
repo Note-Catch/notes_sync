@@ -1,5 +1,4 @@
 from os import environ
-from typing import Any, Dict
 
 from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
