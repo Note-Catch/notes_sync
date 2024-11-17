@@ -1,3 +1,3 @@
-from notes_sync.broker.connection import BrokerManager, get_producer
+from notes_sync.broker.connection import Consumer, Producer
 
-__all__ = ["BrokerManager", "get_producer"]
+__all__ = ["Consumer", "Producer"]

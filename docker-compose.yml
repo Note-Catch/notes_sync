@@ -55,15 +55,22 @@ services:
     environment:
       KAFKA_BROKERCONNECT: notes_sync_broker:29092
   server:
-    image: 'notes_sync_server:latest'
+    image: 'notes_sync_server'
     container_name: 'notes_sync_server_container'
     networks:
       - broker
     depends_on:
       - database
-      - kafdrop
+      - kafka
     ports:
       - "${APP_PORT}:${APP_PORT}"
+  logsequence_consumer:
+    image: 'notes_sync_logsequence_consumer'
+    container_name: 'notes_sync_logsequence_consumer'
+    networks:
+      - broker
+    depends_on:
+      - kafka
 
 networks:
   broker:

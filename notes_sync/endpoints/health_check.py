@@ -1,7 +1,7 @@
 from aiokafka import AIOKafkaProducer, errors
 from fastapi import APIRouter, Depends, Response, status
 
-from notes_sync.broker import get_producer
+from notes_sync.broker import Producer
 from notes_sync.dependencies import admin_basic_auth
 from notes_sync.schemas import PingResponse
 
@@ -26,7 +26,7 @@ async def health_check():
     status_code=status.HTTP_200_OK,
     dependencies=[Depends(admin_basic_auth)],
 )
-async def health_check_broker(producer: AIOKafkaProducer = Depends(get_producer)):
+async def health_check_broker(producer: AIOKafkaProducer = Depends(Producer.get)):
     try:
         await producer.send_and_wait("health_check", b"Ping!")
         return PingResponse()
