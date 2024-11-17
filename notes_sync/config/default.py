@@ -21,8 +21,8 @@ class DefaultSettings(BaseSettings):
     DB_POOL_SIZE: int = int(environ.get("DB_POOL_SIZE", 15))
     DB_CONNECT_RETRY: int = int(environ.get("DB_CONNECT_RETRY", 20))
 
-    KAFKA_HOST: str = environ.get("KAFKA_HOST", "localhost")
-    KAFKA_PORT: int = int(environ.get("KAFKA_PORT", 9092))
+    KAFKA_HOST: str = environ.get("KAFKA_HOST", "notes_sync_broker")
+    KAFKA_PORT: int = int(environ.get("KAFKA_PORT", 29092))
 
     ADMIN_LOGIN: str = environ.get("ADMIN_LOGIN", "eoanermine")
     ADMIN_PASSWORD: str = environ.get("ADMIN_PASSWORD", "eoanermine")
