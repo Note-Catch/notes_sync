@@ -20,6 +20,8 @@ class DefaultSettings(BaseSettings):
     DB_POOL_SIZE: int = int(environ.get("DB_POOL_SIZE", 15))
     DB_CONNECT_RETRY: int = int(environ.get("DB_CONNECT_RETRY", 20))
 
+    KAFKA_HOST: str = environ.get("KAFKA_HOST", "localhost")
+    KAFKA_PORT: int = int(environ.get("KAFKA_PORT", 9092))
     @property
     def database_settings(self) -> dict:
         """
@@ -41,3 +43,10 @@ class DefaultSettings(BaseSettings):
         return "postgresql://{user}:{password}@{host}:{port}/{database}".format(
             **self.database_settings,
         )
+
+    @property
+    def broker_uri(self) -> str:
+        """
+        Get uri for connection with message broker
+        """
+        return f"{self.KAFKA_HOST}:{self.KAFKA_PORT}"
