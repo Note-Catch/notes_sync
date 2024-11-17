@@ -11,3 +11,8 @@ repos:
         entry: black
         language: system
         types: [python]
+      - id: requirements
+        name: requirements
+        entry: make requirements
+        language: system
+        files: "pyproject.toml"

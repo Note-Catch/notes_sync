@@ -34,6 +34,7 @@ configargparse = "^1.7"
 pytest-cov = "^6.0.0"
 sqlalchemy2-stubs = "^0.0.2a38"
 freezegun = "^1.5.1"
+poetry-plugin-export = "^1.8.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

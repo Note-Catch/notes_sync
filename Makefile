@@ -21,6 +21,9 @@ format:
 	poetry run isort $(CODE) $(if $(CHECK_ONLY),--check-only)
 	poetry run black $(CODE) -t py311 $(if $(CHECK_ONLY),--check --diff)
 
+requirements:
+	poetry export --without-hashes --format=requirements.txt > requirements.txt
+
 run:
 	poetry run python3 -m $(CODE)
 
