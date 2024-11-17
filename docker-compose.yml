@@ -54,6 +54,16 @@ services:
       - 19000:9000
     environment:
       KAFKA_BROKERCONNECT: notes_sync_broker:29092
+  server:
+    image: 'notes_sync_server:latest'
+    container_name: 'notes_sync_server_container'
+    networks:
+      - broker
+    depends_on:
+      - database
+      - kafdrop
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
 
 networks:
   broker:
