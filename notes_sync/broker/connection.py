@@ -64,6 +64,7 @@ class Producer:
 
 
 class Consumer:
+    @asynccontextmanager
     async def get(topic: str) -> AIOKafkaConsumer:
         consumer = ConsumerManager().get_consumer(topic)
         try:
@@ -71,5 +72,3 @@ class Consumer:
             yield consumer
         finally:
             await consumer.stop()
-
-    __call__ = asynccontextmanager(get)

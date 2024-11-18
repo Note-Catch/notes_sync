@@ -11,6 +11,10 @@ COPY ./.env /app/.env
 
 CMD ["python3", "-m", "notes_sync"]
 
-FROM producer AS logsequence_consumer
+FROM producer AS health_check_consumer
 
 CMD ["python3", "-m", "notes_sync.consumers.health_check"]
+
+FROM producer AS logsequence_consumer
+
+CMD ["python3", "-m", "notes_sync.consumers.logsequence"]

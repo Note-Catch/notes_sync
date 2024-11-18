@@ -9,8 +9,11 @@ load_dotenv()
 class DefaultSettings(BaseSettings):
     ENV: str = environ.get("ENV", "local")
     PATH_PREFIX: str = environ.get("PATH_PREFIX", "/api/v1")
-    APP_HOST: str = environ.get("APP_HOST", "0.0.0.0")
-    APP_PORT: int = environ.get("APP_PORT", 8080)
+    API_HOST: str = environ.get("API_HOST", "0.0.0.0")
+    API_PORT: int = int(environ.get("API_PORT", 8080))
+
+    LOGSEQUENCE_CONSUMER_HOST: str = environ.get("LOGSEQUENCE_CONSUMER_HOST", API_HOST)
+    LOGSEQUENCE_CONSUMER_PORT: int = int(environ.get("LOGSEQUENCE_CONSUMER_PORT", 8081))
 
     DB_NAME: str = environ.get("DB_NAME", "notes_sync_db")
     DB_PATH: str = environ.get("DB_PATH", "localhost")

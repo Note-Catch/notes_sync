@@ -18,12 +18,12 @@ aiohttp = "^3.10.10"
 psycopg2-binary = "^2.9.10"
 python-dotenv = "^1.0.1"
 uvicorn = "^0.32.0"
-
 pydantic-settings = "^2.6.0"
 aiokafka = "^0.12.0"
+bidict = "^0.23.1"
+
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^4.0.1"
-
 pytest = "^8.3.3"
 pytest-aiohttp = "^1.0.5"
 mock = "^5.1.0"
@@ -34,6 +34,7 @@ sqlalchemy2-stubs = "^0.0.2a38"
 freezegun = "^1.5.1"
 poetry-plugin-export = "^1.8.0"
 ruff = "^0.7.4"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

@@ -17,9 +17,11 @@ all:
 shell:
 	poetry shell
 
+lint:
+	poetry run ruff check $(CODE)
+
 format:
-	poetry run isort $(CODE) $(if $(CHECK_ONLY),--check-only)
-	poetry run black $(CODE) -t py311 $(if $(CHECK_ONLY),--check --diff)
+	poetry run ruff format $(CODE)
 
 requirements:
 	poetry export --without-hashes --format=requirements.txt > requirements.txt
@@ -29,6 +31,7 @@ run:
 
 images:
 	docker build -f Dockerfile --target producer -t notes_sync_server .
+	docker build -f Dockerfile --target health_check_consumer -t notes_sync_health_check_consumer .
 	docker build -f Dockerfile --target logsequence_consumer -t notes_sync_logsequence_consumer .
 
 up:

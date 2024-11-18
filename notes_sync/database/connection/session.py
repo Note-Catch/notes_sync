@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from psycopg2 import OperationalError
 from sqlalchemy import create_engine
 from sqlalchemy.event import listen
@@ -47,6 +48,7 @@ class SessionManager:
         listen(self.engine, "do_connect", retry_connect)
 
 
+@contextmanager
 def get_db() -> Session:
     database = SessionManager().get_session()
     try:

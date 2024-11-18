@@ -8,12 +8,12 @@ from notes_sync.utils import get_hostname
 settings = get_settings()
 
 
-def bind_routes(application: FastAPI, setting: DefaultSettings) -> None:
+def bind_routes(application: FastAPI, settings: DefaultSettings) -> None:
     """
     Bind all routes to application.
     """
     for route in list_of_routes:
-        application.include_router(route, prefix=setting.PATH_PREFIX)
+        application.include_router(route, prefix=settings.PATH_PREFIX)
 
 
 def get_app() -> FastAPI:
@@ -31,7 +31,7 @@ app = get_app()
 if __name__ == "__main__":
     uvicorn.run(
         "notes_sync.__main__:app",
-        host=get_hostname(settings.APP_HOST),
-        port=settings.APP_PORT,
+        host=get_hostname(settings.API_HOST),
+        port=settings.API_PORT,
         reload=True,
     )

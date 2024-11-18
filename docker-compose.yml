@@ -4,6 +4,7 @@ services:
   database:
     image: 'postgres:17'
     container_name: 'notes_sync_database'
+    profiles: [services, all]
     restart: always
     environment:
       POSTGRES_DB: ${DB_NAME}
@@ -11,13 +12,15 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_HOST: ${DB_PATH}
       POSTGRES_PORT: ${DB_PORT}
+    networks:
+      - database
     ports:
       - "${DB_PORT}:${DB_PORT}"
-    network_mode: host
   # Message broking
   zookeeper:
     image: 'confluentinc/cp-zookeeper:7.7.1'
     container_name: 'notes_sync_zookeeper'
+    profiles: [services, all]
     networks:
       - broker
     ports:
@@ -25,9 +28,10 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
-  kafka:
+  broker:
     image: 'confluentinc/cp-kafka:7.7.1'
     container_name: 'notes_sync_broker'
+    profiles: [services, all]
     networks:
       - broker
     depends_on:
@@ -37,41 +41,57 @@ services:
       - "9101:9101"
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ADVERTISED_HOST_NAME: notes_sync_broker:9092
+      KAFKA_ADVERTISED_HOST_NAME: ${KAFKA_HOST}:9092
       KAFKA_ZOOKEEPER_CONNECT: notes_sync_zookeeper:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://notes_sync_broker:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${KAFKA_HOST}:${KAFKA_PORT},PLAINTEXT_HOST://localhost:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
   kafdrop:
     image: 'obsidiandynamics/kafdrop:4.0.2'
     container_name: 'notes_sync_kafdrop'
+    profiles: [services, all]
     networks:
       - broker
     depends_on:
       - zookeeper
-      - kafka
+      - broker
     ports:
       - 19000:9000
     environment:
-      KAFKA_BROKERCONNECT: notes_sync_broker:29092
+      KAFKA_BROKERCONNECT: ${KAFKA_HOST}:${KAFKA_PORT}
   server:
     image: 'notes_sync_server'
     container_name: 'notes_sync_server_container'
+    profiles: [services, all]
     networks:
+      - database
       - broker
     depends_on:
       - database
-      - kafka
+      - broker
     ports:
-      - "${APP_PORT}:${APP_PORT}"
-  logsequence_consumer:
-    image: 'notes_sync_logsequence_consumer'
-    container_name: 'notes_sync_logsequence_consumer'
+      - "${API_PORT}:${API_PORT}"
+  health_check_consumer:
+    image: 'notes_sync_health_check_consumer'
+    container_name: 'notes_sync_health_check_consumer_container'
+    profiles: [consumers, all]
     networks:
       - broker
     depends_on:
-      - kafka
+      - broker
+  logsequence_consumer:
+    image: 'notes_sync_logsequence_consumer'
+    container_name: 'notes_sync_logsequence_consumer_container'
+    profiles: [consumers, all]
+    networks:
+      - database
+      - broker
+    depends_on:
+      - database
+      - broker
 
 networks:
+  database:
+    driver: bridge
   broker:
     driver: bridge
