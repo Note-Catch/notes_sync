@@ -29,6 +29,14 @@ class DefaultSettings(BaseSettings):
     ADMIN_LOGIN: str = environ.get("ADMIN_LOGIN", "eoanermine")
     ADMIN_PASSWORD: str = environ.get("ADMIN_PASSWORD", "eoanermine")
 
+    SECRET_KEY: str = environ.get(
+        "SECRET_KEY", "7f659aaae87c5729ad0cfd33fbcb1339ff8e8f540ef2acf4a3752dbde4b389b5"
+    )
+    ALGORITHM: str = environ.get("ALGORITHM", "HS256")
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = int(
+        environ.get("ACCESS_TOKEN_EXPIRE_MINUTES", 365 * 24 * 60)
+    )
+
     @property
     def database_settings(self) -> dict:
         """
