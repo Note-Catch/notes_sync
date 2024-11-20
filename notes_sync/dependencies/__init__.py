@@ -1,5 +1,3 @@
-from notes_sync.dependencies.basic_auth import admin_basic_auth
+from notes_sync.dependencies.auth import admin_basic_auth, oauth2
 
-__all__ = [
-    "admin_basic_auth",
-]
+__all__ = ["admin_basic_auth", "oauth2"]
