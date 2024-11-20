@@ -5,11 +5,11 @@ from notes_sync.broker import Producer
 from notes_sync.dependencies import admin_basic_auth
 from notes_sync.schemas import PingResponse
 
-api_router = APIRouter(tags=["Health check"])
+api_router = APIRouter(prefix="/health_check", tags=["Health check"])
 
 
 @api_router.get(
-    "/health_check/ping",
+    "/ping",
     summary="API server health check",
     response_model=PingResponse,
     status_code=status.HTTP_200_OK,
@@ -20,7 +20,7 @@ async def health_check():
 
 
 @api_router.get(
-    "/health_check/broker",
+    "/broker",
     summary="Message broker health check",
     response_model=PingResponse,
     status_code=status.HTTP_200_OK,
