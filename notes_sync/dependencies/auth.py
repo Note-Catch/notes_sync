@@ -1,6 +1,5 @@
 import secrets
 
-import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials, OAuth2PasswordBearer
 from jwt.exceptions import InvalidTokenError
@@ -8,6 +7,7 @@ from jwt.exceptions import InvalidTokenError
 from notes_sync.config import get_settings
 from notes_sync.database.models import User
 from notes_sync.database.connection import get_db
+from notes_sync.utils import decode_access_token
 
 http_basic = HTTPBasic()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -37,10 +37,7 @@ def oauth2(token: str = Depends(oauth2_scheme)):
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(
-            token, get_settings().SECRET_KEY, algorithms=[get_settings().ALGORITHM]
-        )
-        username: str = payload.get("sub")
+        username: str = decode_access_token(token).get("sub")
         if username is None:
             raise credentials_exception
         with get_db() as db:

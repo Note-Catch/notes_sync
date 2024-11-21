@@ -9,8 +9,8 @@ from sqlalchemy.orm import Session
 from notes_sync.config import get_settings
 from notes_sync.broker import Consumer
 from notes_sync.database.connection import get_db
-from notes_sync.database.models import LogsequenceMessage
-from notes_sync.utils import get_hostname, row2dict
+from notes_sync.database.models import LogsequenceMessage, User
+from notes_sync.utils import get_hostname, row2dict, decode_access_token
 
 from .connection import ConnectionManager
 
@@ -39,14 +39,15 @@ manager = ConnectionManager()
 async def accept_connection(
     token: str, websocket: WebSocket, db: Session = Depends(get_db)
 ):
+    username: str = decode_access_token(token).get("sub")
+    if username is None:
+        return
+
     await manager.connect(token, websocket)
 
     # Check if there messages for user with the given token, if there're some
     # Then trasmit it to the user
-
-    messages = (
-        db.query(LogsequenceMessage).where(LogsequenceMessage.token == token).scalars()
-    )
+    messages = db.query(User).where(User.username == username).scalars()
     messages = [row2dict(message) for message in messages]
     ids = [messages["id"] for message in messages]
     try:
