@@ -45,3 +45,4 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 app = "notes_sync.__main__:main"
+export-openapi = "scripts.export_openapi.__main__:main"

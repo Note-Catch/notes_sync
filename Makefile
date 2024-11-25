@@ -27,7 +27,8 @@ requirements:
 	poetry export --without-hashes --format=requirements.txt > requirements.txt
 
 openapi:
-	poetry --version
+	poetry install
+	poetry run export-openapi $(CODE).__main__
 
 run:
 	poetry run python3 -m $(CODE)
