@@ -30,6 +30,13 @@ openapi:
 	poetry install
 	poetry run export-openapi $(CODE).__main__
 
+api_client:
+	poetry run openapi-python-client generate --path openapi.json --output-path ./notes_sync/clients/temp_client
+	rm -rf ./notes_sync/clients/api
+	mkdir --parents ./notes_sync/clients/api
+	mv -f ./notes_sync/clients/temp_client/fast_api_client/* ./notes_sync/clients/api
+	rm -rf ./notes_sync/clients/temp_client
+
 run:
 	poetry run python3 -m $(CODE)
 

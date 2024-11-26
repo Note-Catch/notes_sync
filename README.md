@@ -4,6 +4,7 @@
 
 ```shell
 poetry install
+poetry run pip install openapi-python-client
 poetry run pre-commit install
 ```
 
