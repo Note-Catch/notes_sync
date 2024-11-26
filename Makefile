@@ -36,6 +36,7 @@ api_client:
 	mkdir --parents ./notes_sync/clients/api
 	mv -f ./notes_sync/clients/temp_client/fast_api_client/* ./notes_sync/clients/api
 	rm -rf ./notes_sync/clients/temp_client
+	poetry run ruff format ./notes_sync/clients/api
 
 run:
 	poetry run python3 -m $(CODE)
