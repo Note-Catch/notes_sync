@@ -26,8 +26,8 @@ class User(DeclarativeBase):
 setup_user_config_trigger = DDL(
     R"CREATE TRIGGER IF NOT EXISTS setup_user_config AFTER INSERT ON user "
     R"BEGIN "
-    R"INSERT INTO config(name, value, user_id) "
-    R"  SELECT (config_defaults.name, config_defaults.value, NEW.user_id) FROM config_defaults"
+    R"INSERT INTO config(name, value, user) "
+    R"  SELECT (config_defaults.name, config_defaults.value, NEW.id) FROM config_defaults"
     R"END;"
 )
 

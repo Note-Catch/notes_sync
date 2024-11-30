@@ -17,7 +17,7 @@ class Config(DeclarativeBase):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, index=True)
     value = Column(String)
-    user_id = Column(
+    user = Column(
         Integer, ForeignKey("user.id"), primary_key=True, index=True, nullable=False
     )
 
