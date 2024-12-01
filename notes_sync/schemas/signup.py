@@ -15,10 +15,8 @@ class SignupRequest(BaseModel):
 
 
 class UserAlreadyExistsResponse(GenericErrorResponse):
-    def __init__(self):
-        self.status_code = self.status_code()
-        self.error_code = ErrorCode.USER_ALREADY_EXISTS
-        self.error_message = "User with given username already exists"
+    error_code: ErrorCode = ErrorCode.USER_ALREADY_EXISTS
+    error_message: str = "User with given username already exists"
 
     @staticmethod
     def status_code() -> status:
@@ -31,8 +29,9 @@ class User(BaseModel):
 
 class SignupResponse(GenericSuccessResponse):
     def __init__(self, user: User):
-        self.status_code = self.status_code()
-        self.response = GenericSuccessResponseItems(count=1, items=[user])
+        super().__init__(
+            response=GenericSuccessResponseItems(count=1, items=[dict(user)])
+        )
 
     @staticmethod
     def status_code() -> status:

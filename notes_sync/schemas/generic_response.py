@@ -1,30 +1,32 @@
 from enum import IntEnum
 
-from fastapi.responses import JSONResponse
-from pydantic import BaseModel, model_validator
+from fastapi import status
+from pydantic import BaseModel
 
 
 class GenericSuccessResponseItems(BaseModel):
     count: int
     items: list[dict]
 
-    @model_validator(mode="after")
-    def must_be_exactly_count_items(self):
-        if len(self.items) == self.count:
-            raise ValueError(
-                f"Wrong items count: len(items) != count ({len(self.items)} != {self.count})"
-            )
-        return self
 
-
-class GenericSuccessResponse(BaseModel, JSONResponse):
+class GenericSuccessResponse(BaseModel):
     response: GenericSuccessResponseItems
 
 
 class ErrorCode(IntEnum):
     USER_ALREADY_EXISTS = 0
+    BROKER_NOT_RESPONDING = 2
 
 
-class GenericErrorResponse(BaseModel, JSONResponse):
+class GenericErrorResponse(BaseModel):
     error_code: ErrorCode
     error_message: str = ""
+
+
+class EmptyOkResponse(GenericSuccessResponse):
+    def __init__(self):
+        super().__init__(response=GenericSuccessResponseItems(count=0, items=[]))
+
+    @staticmethod
+    def status_code() -> status:
+        return status.HTTP_200_OK

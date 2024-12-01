@@ -10,7 +10,7 @@ from notes_sync.database.connection import db_context
 from notes_sync.utils import decode_access_token
 
 http_basic = HTTPBasic()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/oauth2/auth")
 
 
 def admin_basic_auth(credentials: HTTPBasicCredentials = Depends(http_basic)):

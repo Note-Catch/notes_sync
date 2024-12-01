@@ -31,7 +31,7 @@ api_router = APIRouter(prefix="/oauth2", tags=["Authorization"])
 )
 async def signup(
     model: SignupRequest, db: Session = Depends(get_db)
-) -> Union[SignupResponse, UserAlreadyExistsResponse]:
+) -> SignupResponse | UserAlreadyExistsResponse:
     new_user = models.User.from_request(model)
     try:
         db.add(new_user)
@@ -45,7 +45,7 @@ async def signup(
 async def auth(
     form: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
 ) -> Token:
-    user = db.query(User).where(User.username == form.username).first()
+    user = db.query(models.User).where(models.User.username == form.username).first()
     user = authenticate_user(user, form.password)
     if not user:
         raise HTTPException(
