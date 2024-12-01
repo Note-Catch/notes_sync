@@ -48,10 +48,12 @@ class SessionManager:
         listen(self.engine, "do_connect", retry_connect)
 
 
-@contextmanager
 def get_db() -> Session:
     database = SessionManager().get_session()
     try:
         yield database
     finally:
         database.close()
+
+
+db_context = contextmanager(get_db)

@@ -6,7 +6,7 @@ from jwt.exceptions import InvalidTokenError
 
 from notes_sync.config import get_settings
 from notes_sync.database.models import User
-from notes_sync.database.connection import get_db
+from notes_sync.database.connection import db_context
 from notes_sync.utils import decode_access_token
 
 http_basic = HTTPBasic()
@@ -40,7 +40,7 @@ def oauth2(token: str = Depends(oauth2_scheme)):
         username: str = decode_access_token(token).get("sub")
         if username is None:
             raise credentials_exception
-        with get_db() as db:
+        with db_context() as db:
             user = db.query(User).where(User.username == username).first()
         if user is None:
             raise credentials_exception

@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from notes_sync.config import get_settings
 from notes_sync.broker import Consumer
-from notes_sync.database.connection import get_db
+from notes_sync.database.connection import get_db, db_context
 from notes_sync.database.models import LogsequenceMessage, User
 from notes_sync.utils import get_hostname, row2dict, decode_access_token
 
@@ -69,7 +69,7 @@ async def transmit_messages():
         db.add(new_message)
         db.commit()
 
-    with get_db() as db:
+    with db_context() as db:
         async with Consumer.get("logsequence") as consumer:
             for message in consumer:
                 # If user with token is online, then transmit message
