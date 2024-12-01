@@ -41,10 +41,10 @@ services:
       - "9101:9101"
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ADVERTISED_HOST_NAME: ${KAFKA_HOST}:9092
+      KAFKA_ADVERTISED_HOST_NAME: notes_sync_broker:9092
       KAFKA_ZOOKEEPER_CONNECT: notes_sync_zookeeper:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${KAFKA_HOST}:${KAFKA_PORT},PLAINTEXT_HOST://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://notes_sync_broker:29092,PLAINTEXT_HOST://${KAFKA_HOST}:${KAFKA_PORT}
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
   kafdrop:
     image: 'obsidiandynamics/kafdrop:4.0.2'
@@ -58,11 +58,11 @@ services:
     ports:
       - 19000:9000
     environment:
-      KAFKA_BROKERCONNECT: ${KAFKA_HOST}:${KAFKA_PORT}
+      KAFKA_BROKERCONNECT: notes_sync_broker:29092
   server:
     image: 'notes_sync_server'
     container_name: 'notes_sync_server_container'
-    profiles: [services, all]
+    profiles: [all]
     networks:
       - database
       - broker
