@@ -45,9 +45,11 @@ class ConsumerManager:
     def refresh(self, topic: str) -> None:
         self.consumers[topic] = AIOKafkaConsumer(
             topic,
+            group_id="notes_sync",
             bootstrap_servers=get_settings().broker_uri,
             auto_offset_reset="earliest",
             enable_auto_commit=True,
+            auto_commit_interval_ms=5000,
         )
 
 
