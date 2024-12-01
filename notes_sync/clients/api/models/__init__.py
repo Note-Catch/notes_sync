@@ -13,6 +13,7 @@ from .generic_success_response_items_items_item import (
     GenericSuccessResponseItemsItemsItem,
 )
 from .http_validation_error import HTTPValidationError
+from .message_post_request import MessagePostRequest
 from .ping_response import PingResponse
 from .signup_request import SignupRequest
 from .signup_response import SignupResponse
@@ -32,6 +33,7 @@ __all__ = (
     "GenericSuccessResponseItems",
     "GenericSuccessResponseItemsItemsItem",
     "HTTPValidationError",
+    "MessagePostRequest",
     "PingResponse",
     "SignupRequest",
     "SignupResponse",

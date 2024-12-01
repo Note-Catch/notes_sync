@@ -5,6 +5,76 @@
     "version": "0.1.0"
   },
   "paths": {
+    "/api/v1/config": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Get Config",
+        "operationId": "get_config_api_v1_config_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigGetResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Put Config",
+        "operationId": "put_config_api_v1_config_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfigPutRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyOkResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
     "/api/v1/health_check/ping": {
       "get": {
         "tags": [
@@ -72,6 +142,52 @@
         "security": [
           {
             "HTTPBasic": []
+          }
+        ]
+      }
+    },
+    "/api/v1/messages/post": {
+      "post": {
+        "tags": [
+          "Messages"
+        ],
+        "summary": "Post Message",
+        "operationId": "post_message_api_v1_messages_post_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessagePostRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyOkResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
           }
         ]
       }
@@ -180,76 +296,6 @@
             }
           }
         }
-      }
-    },
-    "/api/v1/config": {
-      "get": {
-        "tags": [
-          "Account"
-        ],
-        "summary": "Get Config",
-        "operationId": "get_config_api_v1_config_get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ConfigGetResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "OAuth2PasswordBearer": []
-          }
-        ]
-      },
-      "put": {
-        "tags": [
-          "Account"
-        ],
-        "summary": "Put Config",
-        "operationId": "put_config_api_v1_config_put",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ConfigPutRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyOkResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "OAuth2PasswordBearer": []
-          }
-        ]
       }
     }
   },
@@ -428,6 +474,19 @@
         "type": "object",
         "title": "HTTPValidationError"
       },
+      "MessagePostRequest": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "title": "Text"
+          }
+        },
+        "type": "object",
+        "required": [
+          "text"
+        ],
+        "title": "MessagePostRequest"
+      },
       "PingResponse": {
         "properties": {
           "message": {
@@ -537,10 +596,6 @@
       }
     },
     "securitySchemes": {
-      "HTTPBasic": {
-        "type": "http",
-        "scheme": "basic"
-      },
       "OAuth2PasswordBearer": {
         "type": "oauth2",
         "flows": {
@@ -549,6 +604,10 @@
             "tokenUrl": "api/v1/oauth2/auth"
           }
         }
+      },
+      "HTTPBasic": {
+        "type": "http",
+        "scheme": "basic"
       }
     }
   }
