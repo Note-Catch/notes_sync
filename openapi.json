@@ -44,7 +44,26 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PingResponse"
+                  "$ref": "#/components/schemas/PingResponse",
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/PingResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/BrokerNotResponding"
+                    }
+                  ],
+                  "title": "Response Health Check Broker Api V1 Health Check Broker Get"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrokerNotResponding"
                 }
               }
             }
@@ -162,6 +181,76 @@
           }
         }
       }
+    },
+    "/api/v1/config": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Get Config",
+        "operationId": "get_config_api_v1_config_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigGetResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Put Config",
+        "operationId": "put_config_api_v1_config_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfigPutRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyOkResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -223,12 +312,86 @@
         ],
         "title": "Body_auth_api_v1_oauth2_auth_post"
       },
+      "BrokerNotResponding": {
+        "properties": {
+          "error_code": {
+            "$ref": "#/components/schemas/ErrorCode",
+            "default": 2
+          },
+          "error_message": {
+            "type": "string",
+            "title": "Error Message",
+            "default": "Message broker is not responding"
+          }
+        },
+        "type": "object",
+        "title": "BrokerNotResponding"
+      },
+      "ConfigGetResponse": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "title": "Config"
+          }
+        },
+        "type": "object",
+        "required": [
+          "config"
+        ],
+        "title": "ConfigGetResponse"
+      },
+      "ConfigLogsequenceEnable": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "default": "logsequence.enable"
+          },
+          "value": {
+            "type": "boolean",
+            "title": "Value"
+          }
+        },
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "title": "ConfigLogsequenceEnable"
+      },
+      "ConfigPutRequest": {
+        "properties": {
+          "config": {
+            "items": {
+              "$ref": "#/components/schemas/ConfigLogsequenceEnable"
+            },
+            "type": "array",
+            "title": "Config"
+          }
+        },
+        "type": "object",
+        "required": [
+          "config"
+        ],
+        "title": "ConfigPutRequest"
+      },
+      "EmptyOkResponse": {
+        "properties": {
+          "response": {
+            "$ref": "#/components/schemas/GenericSuccessResponseItems"
+          }
+        },
+        "type": "object",
+        "required": [
+          "response"
+        ],
+        "title": "EmptyOkResponse"
+      },
       "ErrorCode": {
         "type": "integer",
         "enum": [
-          0
+          0,
+          2
         ],
-        "const": 0,
         "title": "ErrorCode"
       },
       "GenericSuccessResponseItems": {
@@ -327,18 +490,16 @@
       "UserAlreadyExistsResponse": {
         "properties": {
           "error_code": {
-            "$ref": "#/components/schemas/ErrorCode"
+            "$ref": "#/components/schemas/ErrorCode",
+            "default": 0
           },
           "error_message": {
             "type": "string",
             "title": "Error Message",
-            "default": ""
+            "default": "User with given username already exists"
           }
         },
         "type": "object",
-        "required": [
-          "error_code"
-        ],
         "title": "UserAlreadyExistsResponse"
       },
       "ValidationError": {
@@ -379,6 +540,15 @@
       "HTTPBasic": {
         "type": "http",
         "scheme": "basic"
+      },
+      "OAuth2PasswordBearer": {
+        "type": "oauth2",
+        "flows": {
+          "password": {
+            "scopes": {},
+            "tokenUrl": "api/v1/oauth2/auth"
+          }
+        }
       }
     }
   }

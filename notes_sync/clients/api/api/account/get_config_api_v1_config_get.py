@@ -5,15 +5,14 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.broker_not_responding import BrokerNotResponding
-from ...models.ping_response import PingResponse
+from ...models.config_get_response import ConfigGetResponse
 from ...types import Response
 
 
 def _get_kwargs() -> Dict[str, Any]:
     _kwargs: Dict[str, Any] = {
         "method": "get",
-        "url": "/api/v1/health_check/broker",
+        "url": "/api/v1/config",
     }
 
     return _kwargs
@@ -21,33 +20,11 @@ def _get_kwargs() -> Dict[str, Any]:
 
 def _parse_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[BrokerNotResponding, Union["BrokerNotResponding", "PingResponse"]]]:
+) -> Optional[ConfigGetResponse]:
     if response.status_code == 200:
-
-        def _parse_response_200(
-            data: object,
-        ) -> Union["BrokerNotResponding", "PingResponse"]:
-            try:
-                if not isinstance(data, dict):
-                    raise TypeError()
-                response_200_type_0 = PingResponse.from_dict(data)
-
-                return response_200_type_0
-            except:  # noqa: E722
-                pass
-            if not isinstance(data, dict):
-                raise TypeError()
-            response_200_type_1 = BrokerNotResponding.from_dict(data)
-
-            return response_200_type_1
-
-        response_200 = _parse_response_200(response.json())
+        response_200 = ConfigGetResponse.from_dict(response.json())
 
         return response_200
-    if response.status_code == 500:
-        response_500 = BrokerNotResponding.from_dict(response.json())
-
-        return response_500
     if client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(response.status_code, response.content)
     else:
@@ -56,7 +33,7 @@ def _parse_response(
 
 def _build_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[BrokerNotResponding, Union["BrokerNotResponding", "PingResponse"]]]:
+) -> Response[ConfigGetResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -68,15 +45,15 @@ def _build_response(
 def sync_detailed(
     *,
     client: AuthenticatedClient,
-) -> Response[Union[BrokerNotResponding, Union["BrokerNotResponding", "PingResponse"]]]:
-    """Message broker health check
+) -> Response[ConfigGetResponse]:
+    """Get Config
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[BrokerNotResponding, Union['BrokerNotResponding', 'PingResponse']]]
+        Response[ConfigGetResponse]
     """
 
     kwargs = _get_kwargs()
@@ -91,15 +68,15 @@ def sync_detailed(
 def sync(
     *,
     client: AuthenticatedClient,
-) -> Optional[Union[BrokerNotResponding, Union["BrokerNotResponding", "PingResponse"]]]:
-    """Message broker health check
+) -> Optional[ConfigGetResponse]:
+    """Get Config
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[BrokerNotResponding, Union['BrokerNotResponding', 'PingResponse']]
+        ConfigGetResponse
     """
 
     return sync_detailed(
@@ -110,15 +87,15 @@ def sync(
 async def asyncio_detailed(
     *,
     client: AuthenticatedClient,
-) -> Response[Union[BrokerNotResponding, Union["BrokerNotResponding", "PingResponse"]]]:
-    """Message broker health check
+) -> Response[ConfigGetResponse]:
+    """Get Config
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[BrokerNotResponding, Union['BrokerNotResponding', 'PingResponse']]]
+        Response[ConfigGetResponse]
     """
 
     kwargs = _get_kwargs()
@@ -131,15 +108,15 @@ async def asyncio_detailed(
 async def asyncio(
     *,
     client: AuthenticatedClient,
-) -> Optional[Union[BrokerNotResponding, Union["BrokerNotResponding", "PingResponse"]]]:
-    """Message broker health check
+) -> Optional[ConfigGetResponse]:
+    """Get Config
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[BrokerNotResponding, Union['BrokerNotResponding', 'PingResponse']]
+        ConfigGetResponse
     """
 
     return (

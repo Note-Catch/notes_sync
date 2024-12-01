@@ -5,49 +5,43 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.broker_not_responding import BrokerNotResponding
-from ...models.ping_response import PingResponse
+from ...models.config_put_request import ConfigPutRequest
+from ...models.empty_ok_response import EmptyOkResponse
+from ...models.http_validation_error import HTTPValidationError
 from ...types import Response
 
 
-def _get_kwargs() -> Dict[str, Any]:
+def _get_kwargs(
+    *,
+    body: ConfigPutRequest,
+) -> Dict[str, Any]:
+    headers: Dict[str, Any] = {}
+
     _kwargs: Dict[str, Any] = {
-        "method": "get",
-        "url": "/api/v1/health_check/broker",
+        "method": "put",
+        "url": "/api/v1/config",
     }
 
+    _body = body.to_dict()
+
+    _kwargs["json"] = _body
+    headers["Content-Type"] = "application/json"
+
+    _kwargs["headers"] = headers
     return _kwargs
 
 
 def _parse_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[BrokerNotResponding, Union["BrokerNotResponding", "PingResponse"]]]:
+) -> Optional[Union[EmptyOkResponse, HTTPValidationError]]:
     if response.status_code == 200:
-
-        def _parse_response_200(
-            data: object,
-        ) -> Union["BrokerNotResponding", "PingResponse"]:
-            try:
-                if not isinstance(data, dict):
-                    raise TypeError()
-                response_200_type_0 = PingResponse.from_dict(data)
-
-                return response_200_type_0
-            except:  # noqa: E722
-                pass
-            if not isinstance(data, dict):
-                raise TypeError()
-            response_200_type_1 = BrokerNotResponding.from_dict(data)
-
-            return response_200_type_1
-
-        response_200 = _parse_response_200(response.json())
+        response_200 = EmptyOkResponse.from_dict(response.json())
 
         return response_200
-    if response.status_code == 500:
-        response_500 = BrokerNotResponding.from_dict(response.json())
+    if response.status_code == 422:
+        response_422 = HTTPValidationError.from_dict(response.json())
 
-        return response_500
+        return response_422
     if client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(response.status_code, response.content)
     else:
@@ -56,7 +50,7 @@ def _parse_response(
 
 def _build_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[BrokerNotResponding, Union["BrokerNotResponding", "PingResponse"]]]:
+) -> Response[Union[EmptyOkResponse, HTTPValidationError]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -68,18 +62,24 @@ def _build_response(
 def sync_detailed(
     *,
     client: AuthenticatedClient,
-) -> Response[Union[BrokerNotResponding, Union["BrokerNotResponding", "PingResponse"]]]:
-    """Message broker health check
+    body: ConfigPutRequest,
+) -> Response[Union[EmptyOkResponse, HTTPValidationError]]:
+    """Put Config
+
+    Args:
+        body (ConfigPutRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[BrokerNotResponding, Union['BrokerNotResponding', 'PingResponse']]]
+        Response[Union[EmptyOkResponse, HTTPValidationError]]
     """
 
-    kwargs = _get_kwargs()
+    kwargs = _get_kwargs(
+        body=body,
+    )
 
     response = client.get_httpx_client().request(
         **kwargs,
@@ -91,37 +91,48 @@ def sync_detailed(
 def sync(
     *,
     client: AuthenticatedClient,
-) -> Optional[Union[BrokerNotResponding, Union["BrokerNotResponding", "PingResponse"]]]:
-    """Message broker health check
+    body: ConfigPutRequest,
+) -> Optional[Union[EmptyOkResponse, HTTPValidationError]]:
+    """Put Config
+
+    Args:
+        body (ConfigPutRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[BrokerNotResponding, Union['BrokerNotResponding', 'PingResponse']]
+        Union[EmptyOkResponse, HTTPValidationError]
     """
 
     return sync_detailed(
         client=client,
+        body=body,
     ).parsed
 
 
 async def asyncio_detailed(
     *,
     client: AuthenticatedClient,
-) -> Response[Union[BrokerNotResponding, Union["BrokerNotResponding", "PingResponse"]]]:
-    """Message broker health check
+    body: ConfigPutRequest,
+) -> Response[Union[EmptyOkResponse, HTTPValidationError]]:
+    """Put Config
+
+    Args:
+        body (ConfigPutRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[BrokerNotResponding, Union['BrokerNotResponding', 'PingResponse']]]
+        Response[Union[EmptyOkResponse, HTTPValidationError]]
     """
 
-    kwargs = _get_kwargs()
+    kwargs = _get_kwargs(
+        body=body,
+    )
 
     response = await client.get_async_httpx_client().request(**kwargs)
 
@@ -131,19 +142,24 @@ async def asyncio_detailed(
 async def asyncio(
     *,
     client: AuthenticatedClient,
-) -> Optional[Union[BrokerNotResponding, Union["BrokerNotResponding", "PingResponse"]]]:
-    """Message broker health check
+    body: ConfigPutRequest,
+) -> Optional[Union[EmptyOkResponse, HTTPValidationError]]:
+    """Put Config
+
+    Args:
+        body (ConfigPutRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[BrokerNotResponding, Union['BrokerNotResponding', 'PingResponse']]
+        Union[EmptyOkResponse, HTTPValidationError]
     """
 
     return (
         await asyncio_detailed(
             client=client,
+            body=body,
         )
     ).parsed

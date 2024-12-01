@@ -6,19 +6,19 @@ from attrs import field as _attrs_field
 from ..models.error_code import ErrorCode
 from ..types import UNSET, Unset
 
-T = TypeVar("T", bound="UserAlreadyExistsResponse")
+T = TypeVar("T", bound="BrokerNotResponding")
 
 
 @_attrs_define
-class UserAlreadyExistsResponse:
+class BrokerNotResponding:
     """
     Attributes:
         error_code (Union[Unset, ErrorCode]):
-        error_message (Union[Unset, str]):  Default: 'User with given username already exists'.
+        error_message (Union[Unset, str]):  Default: 'Message broker is not responding'.
     """
 
     error_code: Union[Unset, ErrorCode] = UNSET
-    error_message: Union[Unset, str] = "User with given username already exists"
+    error_message: Union[Unset, str] = "Message broker is not responding"
     additional_properties: Dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -50,13 +50,13 @@ class UserAlreadyExistsResponse:
 
         error_message = d.pop("error_message", UNSET)
 
-        user_already_exists_response = cls(
+        broker_not_responding = cls(
             error_code=error_code,
             error_message=error_message,
         )
 
-        user_already_exists_response.additional_properties = d
-        return user_already_exists_response
+        broker_not_responding.additional_properties = d
+        return broker_not_responding
 
     @property
     def additional_keys(self) -> List[str]:
