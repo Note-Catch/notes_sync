@@ -30,8 +30,6 @@ async def post_message(
     if user.logsequence_enable:
         await producer.send_and_wait(
             "logsequence",
-            json.dumps({"user": user.id, "text": request.text}).encode(
-                "utf-8"
-            ),
+            json.dumps({"user": user.id, "text": request.text}).encode("utf-8"),
         )
     return schemas.EmptyOkResponse()
