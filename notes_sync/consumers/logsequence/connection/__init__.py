@@ -1,6 +1,1 @@
-from .manager import ConnectionManager
-
-
-__all__ = [
-    "ConnectionManager",
-]
+from .manager import ConnectionManager as ConnectionManager
