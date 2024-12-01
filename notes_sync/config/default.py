@@ -1,4 +1,5 @@
 from os import environ
+from pathlib import Path
 
 from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
@@ -37,6 +38,12 @@ class DefaultSettings(BaseSettings):
         environ.get("ACCESS_TOKEN_EXPIRE_MINUTES", 365 * 24 * 60)
     )
 
+    LOGSEQUENCE_USERNAME: str = environ.get("LOGSEQUENCE_USERNAME")
+    LOGSEQUENCE_PASSWORD: str = environ.get("LOGSEQUENCE_PASSWORD")
+    LOGSEQUENCE_JOURNALS_PATH: Path = Path(environ.get("LOGSEQUENCE_JOURNALS_PATH", ""))
+    LOGSEQUENCE_FILE_FORMAT: str = environ.get("LOGSEQUENCE_FILE_FORMAT")
+    LOGSEQUENCE_TIME_FORMAT: str = environ.get("LOGSEQUENCE_TIME_FORMAT")
+
     @property
     def database_settings(self) -> dict:
         """
@@ -65,3 +72,9 @@ class DefaultSettings(BaseSettings):
         Get uri for connection with message broker
         """
         return f"{self.KAFKA_HOST}:{self.KAFKA_PORT}"
+
+    def logsequence_uri(self, token: str) -> str:
+        """
+        Get uri for connection with logsequence consumer
+        """
+        return f"ws://{self.LOGSEQUENCE_CONSUMER_HOST}:{self.LOGSEQUENCE_CONSUMER_PORT}/ws/{token}"
