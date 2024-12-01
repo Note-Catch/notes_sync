@@ -7,21 +7,32 @@ import json
 import typer
 from websockets.asyncio.client import connect
 
-from notes_sync.clients.api import Client
+from notes_sync.clients.api import AuthenticatedClient, Client
+from notes_sync.clients.api.api.account import (
+    get_config_api_v1_config_get,
+    put_config_api_v1_config_put,
+)
 from notes_sync.clients.api.api.authorization import auth_api_v1_oauth2_auth_post
-from notes_sync.clients.api.models import BodyAuthApiV1Oauth2AuthPost
+from notes_sync.clients.api.models import (
+    BodyAuthApiV1Oauth2AuthPost,
+    ConfigLogsequenceEnable,
+    ConfigPutRequest,
+)
 from notes_sync.config import get_settings
 
 from .logsequence import Journal
 
 
+app = typer.Typer()
+
+
 def fill_settings(
-    url: Optional[str],
-    username: Optional[str],
-    password: Optional[str],
-    path: Optional[Path],
-    date_format: Optional[str],
-    time_format: Optional[str],
+    url: Optional[str] = None,
+    username: Optional[str] = None,
+    password: Optional[str] = None,
+    path: Optional[Path] = None,
+    date_format: Optional[str] = None,
+    time_format: Optional[str] = None,
 ):
     settings = get_settings()
     if url is None:
@@ -46,7 +57,7 @@ def fill_settings(
     }
 
 
-async def main(token: str, settings: dict, reconnection_timeout: int):
+async def fetch_main(token: str, settings: dict, reconnection_timeout: int):
     while True:
         try:
             async with connect(
@@ -69,7 +80,60 @@ async def main(token: str, settings: dict, reconnection_timeout: int):
         await asyncio.sleep(reconnection_timeout)
 
 
-def typer_main(
+def get_token(settings, client: Client) -> str:
+    response = auth_api_v1_oauth2_auth_post.sync(
+        client=client,
+        body=BodyAuthApiV1Oauth2AuthPost(
+            username=settings["username"], password=settings["password"]
+        ),
+    )
+    return response.access_token
+
+
+@app.command()
+def config_get(
+    url: Optional[str] = None,
+    username: Optional[str] = None,
+    password: Optional[str] = None,
+):
+    settings = fill_settings(url, username, password)
+    client = Client(base_url=settings["url"])
+    with client as client:
+        access_token = get_token(settings, client)
+    client = AuthenticatedClient(base_url=settings["url"], token=access_token)
+    with client as client:
+        response = get_config_api_v1_config_get.sync(client=client)
+        print(response.config)
+
+
+@app.command()
+def config_update(
+    logsequence_enable: bool,
+    url: Optional[str] = None,
+    username: Optional[str] = None,
+    password: Optional[str] = None,
+):
+    settings = fill_settings(url, username, password)
+    client = Client(base_url=settings["url"])
+    with client as client:
+        access_token = get_token(settings, client)
+    client = AuthenticatedClient(base_url=settings["url"], token=access_token)
+    with client as client:
+        response = put_config_api_v1_config_put.sync(
+            client=client,
+            body=ConfigPutRequest(
+                config=[
+                    ConfigLogsequenceEnable(
+                        name="logsequence.enable", value=logsequence_enable
+                    )
+                ]
+            ),
+        )
+        print(response)
+
+
+@app.command()
+def main(
     reconnection_timeout: int = 5,
     url: Optional[str] = None,
     username: Optional[str] = None,
@@ -81,14 +145,9 @@ def typer_main(
     settings = fill_settings(url, username, password, path, date_format, time_format)
     client = Client(base_url=settings["url"])
     with client as client:
-        response = auth_api_v1_oauth2_auth_post.sync(
-            client=client,
-            body=BodyAuthApiV1Oauth2AuthPost(
-                username=settings["username"], password=settings["password"]
-            ),
-        )
-        asyncio.run(main(response.access_token, settings, reconnection_timeout))
+        access_token = get_token(settings, client)
+        asyncio.run(fetch_main(access_token, settings, reconnection_timeout))
 
 
 if __name__ == "__main__":
-    typer.run(typer_main)
+    app()
