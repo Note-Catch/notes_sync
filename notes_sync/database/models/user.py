@@ -1,7 +1,6 @@
 from typing import Self
 
 from sqlalchemy import Column, Integer, String, Boolean
-from sqlalchemy.orm import relationship
 
 from notes_sync.database import DeclarativeBase
 from notes_sync.schemas import SignupRequest, ConfigValue

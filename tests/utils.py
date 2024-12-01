@@ -1,7 +1,6 @@
 import os
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Union
 
 from alembic.config import Config
 from configargparse import Namespace
@@ -10,7 +9,7 @@ PROJECT_PATH = Path(__file__).parent.parent.resolve()
 
 
 def make_alembic_config(
-    cmd_opts: Union[Namespace, SimpleNamespace], base_path: Path = PROJECT_PATH
+    cmd_opts: Namespace | SimpleNamespace, base_path: Path = PROJECT_PATH
 ) -> Config:
     """
     Создает объект конфигурации alembic на основе аргументов командной строки,
