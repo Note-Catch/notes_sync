@@ -31,7 +31,7 @@ openapi:
 	poetry run export-openapi $(CODE).__main__
 
 api_client:
-	poetry run openapi-python-client generate --path openapi.json --output-path ./notes_sync/clients/temp_client
+	openapi-python-client generate --path openapi.json --output-path ./notes_sync/clients/temp_client
 	rm -rf ./notes_sync/clients/api
 	mkdir --parents ./notes_sync/clients/api
 	mv -f ./notes_sync/clients/temp_client/fast_api_client/* ./notes_sync/clients/api
@@ -47,10 +47,10 @@ images:
 	docker build -f Dockerfile --target logsequence_consumer -t notes_sync_logsequence_consumer .
 
 up:
-	docker compose -f docker-compose.yml up --detach --remove-orphans
+	docker compose -f docker-compose.yml --profile=all up --detach --remove-orphans
 
 down:
-	docker compose down
+	docker compose -f docker-compose.yml --profile=all down
 
 open_db:
 	docker exec -it notes_sync_db psql -U ${DB_USER} -W ${DB_NAME}
