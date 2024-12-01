@@ -30,14 +30,14 @@ def admin_basic_auth(credentials: HTTPBasicCredentials = Depends(http_basic)):
         )
 
 
-def oauth2(token: str = Depends(oauth2_scheme)):
+def oauth2(token: str = Depends(oauth2_scheme)) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        username: str = decode_access_token(token).get("sub")
+        username: str = decode_access_token(token).get("username")
         if username is None:
             raise credentials_exception
         with db_context() as db:

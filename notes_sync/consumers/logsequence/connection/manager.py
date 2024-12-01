@@ -8,26 +8,27 @@ class ConnectionManager:
     """
 
     def __init__(self):
-        self.active_connections: dict[str, WebSocket] = bidict()
+        self.active_connections: dict[int, WebSocket] = bidict()
 
     def __new__(cls):
         if not hasattr(cls, "instance"):
             cls.instance = super(ConnectionManager, cls).__new__(cls)
         return cls.instance
 
-    async def connect(self, token: str, websocket: WebSocket):
+    async def connect(self, token: int, websocket: WebSocket):
         await websocket.accept()
         self.active_connections[token] = websocket
 
     def __remove(self, websocket: WebSocket):
-        token = self.active_connections.inverse(websocket)
-        del self.active_connections[token]
+        token = self.active_connections.inverse.get(websocket, None)
+        if token is not None:
+            del self.active_connections[token]
 
     async def disconnect(self, websocket: WebSocket):
         await websocket.close()
         self.__remove(websocket)
 
-    def get(self, token: str):
+    def get(self, token: int):
         return self.active_connections.get(token, None)
 
     async def receive_json(self, websocket: WebSocket):
@@ -35,14 +36,14 @@ class ConnectionManager:
             message = await websocket.receive_json(websocket)
             return message
         except WebSocketDisconnect:
-            self.remove(websocket)
+            self.__remove(websocket)
             raise
 
     async def send_json(self, websocket: WebSocket, message: object):
         try:
             await websocket.send_json(message)
         except WebSocketDisconnect:
-            self.remove(websocket)
+            self.__remove(websocket)
             raise
 
     async def broadcast(self, message: object):
@@ -53,6 +54,6 @@ class ConnectionManager:
             except WebSocketDisconnect:
                 deletion_list.append(connection)
         for connection in deletion_list:
-            self.remove(connection)
+            self.__remove(connection)
         if deletion_list:
             raise WebSocketDisconnect()
